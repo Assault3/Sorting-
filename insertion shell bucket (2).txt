@@ -1,0 +1,150 @@
+#include <iostream>
+#include <algorithm>
+#include <chrono>
+#include <vector>
+
+using namespace std;
+using namespace chrono;
+
+
+class InsertionSort
+{
+public:
+	void insertionSort(int* arr, int n)
+	{
+		for (int i = 1; i < n; i++)
+		{
+			if (arr[i] < arr[i - 1])
+			{
+				swap(arr[i], arr[i - 1]);
+				int j = i - 1;
+				while (j > 0 && arr[j] < arr[j - 1])
+				{
+					swap(arr[j], arr[j - 1]);
+					j--;
+				}
+			}
+		}
+	}
+};
+
+
+class ShellSort
+{
+public:
+	void shellSort(int* arr, int n)
+	{
+		int gap = n / 2;
+		int j;
+		while (gap > 0)
+		{
+			//cout << "gap: " << gap << endl;
+			for (int i = gap; i < n; i++)
+			{
+				j = i - gap;
+				//cout << "i: " << j + 1 << endl;
+				//cout << "gapEl: " << arr[gap] << endl;
+				//if(arr[i] > arr[j])
+				//{
+				while (j >= 0 && arr[j + gap] < arr[j])
+				{
+					swap(arr[j + gap], arr[j]);
+					j -= gap;
+				}
+
+				//for (int i = 0; i < n; i++)
+				//	cout << arr[i] << " ";
+				//cout << endl;
+				//cout << endl;
+
+			}
+			gap /= 2;
+		}
+	}
+};
+
+
+class BucketSort
+{
+public:
+	void bucketSort(float arr[], int n)
+	{
+
+		vector<vector<float>> b(n);
+
+		for (int i = 0; i < n; i++) {
+
+			int bi = n * arr[i];
+			b[bi].push_back(arr[i]);
+		}
+
+		for (int i = 0; i < n; i++)
+			sort(b[i].begin(), b[i].end());
+
+		int index = 0;
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < b[i].size(); j++)
+				arr[index++] = b[i][j];
+	}
+};
+
+
+
+int main()
+{
+	//int arr1[] = { 12, 11, 13, 6, 5 , 44, 25, -7, 100 };
+	//int arr2[] = { 12, 11, 13, 6, 5 , 44, 25, -7, 8 };
+	//int arr3[] = { 12, 11, 13, 6, 5 };
+	//int n = sizeof(arr1) / sizeof(int);
+	int n = 10;
+	int* arr1 = new int[n];
+	int* arr2 = new int[n];
+	float* arr3 = new float[n];
+	for (int i = 0; i < n; i++)
+	{
+		int num;
+		num = (rand() % 1001);
+		arr1[i] = num;
+		arr2[i] = num;
+		arr3[i] = float(num % 100) / 100;
+	}
+	InsertionSort is;
+	auto starti = high_resolution_clock::now();
+	is.insertionSort(arr1, n);
+	auto endi = high_resolution_clock::now();
+	cout << "Insertion Sort: " << duration_cast<nanoseconds>(endi - starti).count() << " nanoseconds" << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr1[i] << " ";
+	}
+	cout << endl << endl;
+
+	ShellSort ss;
+	auto starts = high_resolution_clock::now();
+	ss.shellSort(arr2, n);
+	auto ends = high_resolution_clock::now();
+	cout << "Shell Sort: " << duration_cast<nanoseconds>(ends - starts).count() << " nanoseconds" << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr2[i] << " ";
+	}
+	cout << endl << endl;
+
+	BucketSort bs;
+	auto startb = high_resolution_clock::now();
+	bs.bucketSort(arr3, n);
+	auto endb = high_resolution_clock::now();
+	cout << "Bucket Sort: " << duration_cast<nanoseconds>(endb - startb).count() << " nanoseconds" << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr3[i] << " ";
+	}
+
+
+	
+	delete []arr1;
+	delete []arr2;
+	delete []arr3;
+
+	return 0;
+}
